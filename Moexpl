@@ -1,0 +1,98 @@
+Isolation Forest — Explained Simply
+What does Isolation Forest do?
+
+It’s an algorithm used to automatically find “anomalies” (strange or unusual data points) in a large dataset, like millions of Teams call quality records.
+
+How does it work?
+
+Sees the Entire Dataset
+
+Isolation Forest looks at all the data we give it, or a large random sample from the data, to understand what “normal” looks like.
+
+Splits the Data Like a Decision Tree
+
+It builds many random “trees.” Each tree splits the data by picking a feature (like Jitter, Packet Loss, etc.) and a random threshold.
+
+Each split separates the dataset into smaller and smaller groups, kind of like asking “Is the Jitter above or below 20ms?” and repeating that process for each group.
+
+Finds Outliers by Isolation
+
+Anomalies (the weird or problematic calls) are “easier” to separate from the rest — they get isolated faster, after fewer splits.
+
+Normal calls are mixed in with many others, so it takes more splits to fully isolate them.
+
+Scores Each Row
+
+Every call gets an “anomaly score” that shows how easily it was isolated.
+
+High scores = more likely to be an anomaly (bad call).
+
+Flags Top Anomalies
+
+We decide what percentage of the data we want to flag as “anomalous” (for example, the top 1% or 5% with the highest scores).
+
+These are the rows the model thinks are most likely to represent real problems.
+
+Why is it called "Isolation" Forest?
+
+Because the idea is to isolate outliers from the rest of the data, and it uses a “forest” (many trees) for robust results.
+
+All Calls → Random Trees → Split/Split/Split → Fast isolation = anomaly!
+
+Isolation Forest automatically highlights the most unusual calls by “splitting up” the data, helping us spot service issues fast — even ones we didn’t expect.
+
+
+1. Step-by-Step Recap
+Step 1: Looks at all the call data (features like Jitter, Packet Loss, Round Trip Time, etc.).
+
+Step 2: Builds many random trees by splitting the data on random feature thresholds (e.g., “Is Jitter > 25ms?”).
+
+Step 3: Anomalies are quickly separated from the crowd — they need fewer splits.
+
+Step 4: Each call gets an anomaly score. The ones easiest to isolate are flagged as problems.
+
+      All Calls (the dataset)
+              |
+      -----------------------
+      |         |          |
+   Split 1   Split 2    Split 3
+  (Jitter)  (PktLoss)  (RTT)
+      |         |          |
+     ...       ...        ...
+      |         |          |
+Isolated quickly? --> High anomaly score!
+Needs more splits? --> Normal call
+
+(The process is repeated in many random trees!)
+
+Data
+[Table icon: All Calls]
+
+Random Splits
+[Tree icon with branches labeled: Jitter, Packet Loss, etc.]
+
+Fast Isolation = Anomaly
+[Flag or alert icon next to a quickly separated call]
+
+Slower Isolation = Normal
+[Group icon for normal calls]
+
+3. How Feature Choice Affects Results
+What if we change which features we use?
+
+Isolation Forest is flexible:
+You can choose which call metrics (“features”) to feed into the model:
+
+Jitter, Packet Loss, RTT, Media Error, Device, VDI, etc.
+
+Changing features = changing what “anomalous” means:
+
+Focusing only on Jitter? Model finds weird Jitter patterns.
+
+Add Packet Loss? Now it finds outliers in both Jitter and Packet Loss.
+
+Add Device type or VDI? Can spot unusual device/VDI behavior too.
+
+Summary Statement:
+
+“By adding or removing features, we can tune the model to focus on different types of problems—like network issues, device issues, or user behavior. This lets us adapt anomaly detection to match what’s most important for our service quality.”
