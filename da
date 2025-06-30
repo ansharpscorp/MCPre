@@ -1,0 +1,34 @@
+Most Frequent Anomaly Reason = 
+VAR ReasonTable =
+    ADDCOLUMNS (
+        SUMMARIZE('Alerts', 'Alerts'[Reflexive IP], 'Alerts'[Anomaly Reason]),
+        "CountReason", CALCULATE(COUNTROWS('Alerts'))
+    )
+VAR MaxReason =
+    CALCULATE (
+        MAXX(ReasonTable, [CountReason]),
+        ALLEXCEPT('Alerts', 'Alerts'[Reflexive IP])
+    )
+RETURN
+    CALCULATE (
+        SELECTCOLUMNS (
+            TOPN(1, ReasonTable, [CountReason], DESC),
+            "AnomalyReason", 'Alerts'[Anomaly Reason]
+        ),
+        [CountReason] = MaxReason
+    )
+
+
+
+  Anomalies per Day = CALCULATE(
+    COUNTROWS('Alerts'),
+    ALLEXCEPT('Alerts', 'Alerts'[Date])
+)
+
+  Poor Feedback Rate = 
+DIVIDE(
+    SUM('Alerts'[Poor Feedback Count]), 
+    COUNTROWS('Alerts')
+)
+
+  
